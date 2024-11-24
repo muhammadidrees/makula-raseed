@@ -75,7 +75,7 @@ export default function InvoiceDataForm() {
       />
 
       {fields.length > 0 ? (
-        <Group mb="xs">
+        <Group>
           <Text fw={500} size="sm">
             Invoice Items
           </Text>
@@ -88,7 +88,7 @@ export default function InvoiceDataForm() {
 
       {fields}
 
-      <Group align="center" mt="xl" mb="xl" grow>
+      <Group align="center" mb="xl" grow>
         <Button
           onClick={() =>
             form.insertListItem("items", {
