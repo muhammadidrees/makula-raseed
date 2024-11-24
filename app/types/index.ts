@@ -24,6 +24,7 @@ export interface InvoiceData {
     description: string;
     quantity: number;
     price: number;
+    key: string;
 }
 
 export interface PersonalInfo {
