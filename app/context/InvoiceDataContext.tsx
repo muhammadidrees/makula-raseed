@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { InvoiceData } from "../types";
+import { randomId } from "@mantine/hooks";
 
 interface InvoiceDataContextProps {
   formData: InvoiceData;
@@ -23,7 +24,14 @@ export const useInvoiceDataContext = (): InvoiceDataContextProps => {
 export const InvoiceDataProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<InvoiceData>({
     date: new Date(),
-    items: [],
+    items: [
+      {
+        description: "",
+        quantity: 1,
+        price: 0,
+        key: randomId(),
+      },
+    ],
   });
 
   return (

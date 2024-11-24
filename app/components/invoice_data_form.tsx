@@ -34,7 +34,7 @@ export default function InvoiceDataForm() {
   });
 
   const fields = form.getValues().items.map((item, index) => (
-    <Group key={item.key} mt="xs">
+    <Group key={item.key}>
       <TextInput
         placeholder="Desription"
         withAsterisk
@@ -47,7 +47,6 @@ export default function InvoiceDataForm() {
         key={form.key(`items.${index}.quantity`)}
         {...form.getInputProps(`items.${index}.quantity`)}
       />
-
       <NumberInput
         placeholder="Amount"
         key={form.key(`items.${index}.price`)}
@@ -58,6 +57,7 @@ export default function InvoiceDataForm() {
 
       <ActionIcon
         color="red"
+        disabled={index === 0}
         onClick={() => form.removeListItem("items", index)}
       >
         <IconTrash size="1rem" />
