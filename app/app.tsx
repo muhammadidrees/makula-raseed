@@ -11,8 +11,8 @@ function Main() {
       <Grid.Col span={3}>
         <InvoiceForm />
       </Grid.Col>
-      <Grid.Col span={4}>
-        <Container>
+      <Grid.Col span="auto">
+        <Container bg="var(--mantine-color-blue-light)" fluid h={500}>
           <Preview />
         </Container>
       </Grid.Col>
