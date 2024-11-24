@@ -11,11 +11,8 @@ import {
 } from "@mantine/core";
 import { PersonalInfo } from "../types";
 import { usePersonalFormContext } from "../context/PersonalInfoContext";
-import {
-  IconAlertSquareRounded,
-  IconSquareRoundedCheck,
-} from "@tabler/icons-react";
-import { useMantineTheme } from "@mantine/core";
+import { AccordianControl } from "./AccordianControl";
+import { notifications } from "@mantine/notifications";
 
 function onFromSubmit(
   form: UseFormReturnType<PersonalInfo>,
@@ -23,6 +20,11 @@ function onFromSubmit(
 ) {
   console.log(form.values);
   setFormData(form.values);
+  notifications.show({
+    color: "green",
+    title: "Personal Info Saved",
+    message: "Personal Info has been saved successfully",
+  });
 }
 
 export function PersonalInfoForm() {
@@ -41,6 +43,9 @@ export function PersonalInfoForm() {
       },
     },
   });
+
+  const isSaveDisabled =
+    JSON.stringify(form.values) === JSON.stringify(formData);
 
   return (
     <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
@@ -101,7 +106,9 @@ export function PersonalInfoForm() {
         </Group>
 
         <Group align="center" mt="xl" grow>
-          <Button type="submit">Save</Button>
+          <Button type="submit" disabled={isSaveDisabled}>
+            Save
+          </Button>
         </Group>
       </Stack>
     </form>
@@ -110,7 +117,6 @@ export function PersonalInfoForm() {
 
 export default function PersonalInfoAccordian() {
   const { formData } = usePersonalFormContext();
-  const theme = useMantineTheme();
 
   const isFormEmpty =
     formData.name === "" ||
@@ -122,17 +128,8 @@ export default function PersonalInfoAccordian() {
 
   return (
     <Accordion.Item key={"Personal Info"} value={"Personal Info"}>
-      <Accordion.Control
-        icon={
-          isFormEmpty ? (
-            <IconAlertSquareRounded color={theme.colors.red[9]} />
-          ) : (
-            <IconSquareRoundedCheck color={theme.colors.teal[9]} />
-          )
-        }
-      >
-        {"Personal Info"}
-      </Accordion.Control>
+      <AccordianControl label={"Personal Info"} isFormEmpty={isFormEmpty} />
+
       <Accordion.Panel>
         <PersonalInfoForm />
       </Accordion.Panel>
