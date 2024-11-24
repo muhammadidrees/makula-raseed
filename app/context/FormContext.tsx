@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { PersonalInfo } from "../types";
 
-interface FormContextType {
+interface PersonInfoFormContextType {
   formData: PersonalInfo;
   setFormData: React.Dispatch<React.SetStateAction<PersonalInfo>>;
 }
 
-const FormContext = createContext<FormContextType | undefined>(undefined);
+const PersonalInfoFormContext = createContext<
+  PersonInfoFormContextType | undefined
+>(undefined);
 
 export const useFormContext = () => {
-  const context = useContext(FormContext);
+  const context = useContext(PersonalInfoFormContext);
   if (!context) {
     throw new Error("useFormContext must be used within a FormProvider");
   }
@@ -29,8 +31,8 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <FormContext.Provider value={{ formData, setFormData }}>
+    <PersonalInfoFormContext.Provider value={{ formData, setFormData }}>
       {children}
-    </FormContext.Provider>
+    </PersonalInfoFormContext.Provider>
   );
 };
