@@ -1,3 +1,5 @@
+import "@mantine/dates/styles.css";
+
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -13,6 +13,12 @@ export interface Invoice {
     dueDate: string;
     period: string;
   }
+
+
+export interface InvoiceData {
+  date: Date;
+  items: InvoiceItem[];
+}
   
   export interface InvoiceItem {
     description: string;

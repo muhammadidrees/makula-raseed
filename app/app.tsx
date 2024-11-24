@@ -6,6 +6,7 @@ import { PersonalFormProvider } from "./context/PersonalInfoContext";
 import { CompanyFormProvider } from "./context/CompanyInfoContext";
 import { BankFormProvider } from "./context/BankInfoContext";
 import Preview from "./components/preview";
+import { InvoiceDataProvider } from "./context/InvoiceDataContext";
 
 function Main() {
   return (
@@ -25,21 +26,23 @@ function Main() {
 
 export default function App() {
   return (
-    <PersonalFormProvider>
-      <CompanyFormProvider>
-        <BankFormProvider>
-          <AppShell padding="md" header={{ height: 60 }}>
-            <AppShell.Header>
-              <Group h="100%" px="md">
-                <Title order={3}>RASEED</Title>
-              </Group>
-            </AppShell.Header>
-            <AppShell.Main>
-              <Main />
-            </AppShell.Main>
-          </AppShell>
-        </BankFormProvider>
-      </CompanyFormProvider>
-    </PersonalFormProvider>
+    <InvoiceDataProvider>
+      <PersonalFormProvider>
+        <CompanyFormProvider>
+          <BankFormProvider>
+            <AppShell padding="md" header={{ height: 60 }}>
+              <AppShell.Header>
+                <Group h="100%" px="md">
+                  <Title order={3}>RASEED</Title>
+                </Group>
+              </AppShell.Header>
+              <AppShell.Main>
+                <Main />
+              </AppShell.Main>
+            </AppShell>
+          </BankFormProvider>
+        </CompanyFormProvider>
+      </PersonalFormProvider>
+    </InvoiceDataProvider>
   );
 }
