@@ -38,17 +38,20 @@ export default function InvoiceDataForm() {
       <TextInput
         placeholder="Desription"
         withAsterisk
-        style={{ flex: 1 }}
+        style={{ flex: 4 }}
         key={form.key(`items.${index}.description`)}
         {...form.getInputProps(`items.${index}.description`)}
       />
+
       <NumberInput
         placeholder="Qty"
+        style={{ flex: 1 }}
         key={form.key(`items.${index}.quantity`)}
         {...form.getInputProps(`items.${index}.quantity`)}
       />
       <NumberInput
         placeholder="Amount"
+        style={{ flex: 1 }}
         key={form.key(`items.${index}.price`)}
         {...form.getInputProps(`items.${index}.price`)}
         hideControls

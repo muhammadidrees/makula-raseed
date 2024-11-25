@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShell, Grid, Group, Title, Container } from "@mantine/core";
+import { AppShell, Grid, Group, Title } from "@mantine/core";
 import InvoiceForm from "./components/invoice_form";
 import { PersonalFormProvider } from "./context/PersonalInfoContext";
 import { CompanyFormProvider } from "./context/CompanyInfoContext";
@@ -10,17 +10,14 @@ import { InvoiceDataProvider } from "./context/InvoiceDataContext";
 
 function Main() {
   return (
-    <InvoiceForm />
-    // <Grid>
-    //   <Grid.Col span={3}>
-    //     <InvoiceForm />
-    //   </Grid.Col>
-    //   <Grid.Col span="auto">
-    //     <Container bg="var(--mantine-color-blue-light)" fluid h={500}>
-    //       <Preview />
-    //     </Container>
-    //   </Grid.Col>
-    // </Grid>
+    <Grid grow>
+      <Grid.Col span={3}>
+        <InvoiceForm />
+      </Grid.Col>
+      <Grid.Col span={5}>
+        <Preview />
+      </Grid.Col>
+    </Grid>
   );
 }
 
