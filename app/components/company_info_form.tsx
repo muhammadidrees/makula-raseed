@@ -20,7 +20,7 @@ function onFromSubmit(
   });
 }
 
-export function CompanyInfoForm() {
+export default function CompanyInfoAccordion() {
   const { formData, setFormData } = useCompanyFormContext();
 
   const form = useForm<CompanyInfo>({
@@ -38,57 +38,6 @@ export function CompanyInfoForm() {
   const isSaveDisabled =
     JSON.stringify(form.values) === JSON.stringify(formData);
 
-  return (
-    <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
-      <Stack>
-        <TextInput
-          label="Company Name"
-          placeholder="Company Name"
-          withAsterisk
-          key={form.key("name")}
-          {...form.getInputProps("name")}
-        />
-        <TextInput
-          mt="md"
-          label="Address"
-          placeholder="Address"
-          withAsterisk
-          key={form.key("address.street")}
-          {...form.getInputProps("address.street")}
-        />
-
-        <Group grow>
-          <TextInput
-            mt="md"
-            label="City"
-            placeholder="City"
-            withAsterisk
-            key={form.key("address.city")}
-            {...form.getInputProps("address.city")}
-          />
-          <TextInput
-            mt="md"
-            label="Zip"
-            placeholder="Zip"
-            withAsterisk
-            key={form.key("address.zip")}
-            {...form.getInputProps("address.zip")}
-          />
-        </Group>
-
-        <Group align="center" mt="xl" grow>
-          <Button type="submit" disabled={isSaveDisabled}>
-            Save
-          </Button>
-        </Group>
-      </Stack>
-    </form>
-  );
-}
-
-export default function CompanyInfoAccordion() {
-  const { formData } = useCompanyFormContext();
-
   const isFormEmpty =
     formData.name === "" &&
     formData.address.street === "" &&
@@ -97,9 +46,56 @@ export default function CompanyInfoAccordion() {
 
   return (
     <Accordion.Item key={"Company Info"} value={"Company Info"}>
-      <AccordianControl label={"Company Info"} isFormEmpty={isFormEmpty} />
+      <AccordianControl
+        label={"Company Info"}
+        isFormEmpty={isFormEmpty}
+        isFormUnsaved={!isSaveDisabled}
+      />
       <Accordion.Panel>
-        <CompanyInfoForm />
+        <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
+          <Stack>
+            <TextInput
+              label="Company Name"
+              placeholder="Company Name"
+              withAsterisk
+              key={form.key("name")}
+              {...form.getInputProps("name")}
+            />
+            <TextInput
+              mt="md"
+              label="Address"
+              placeholder="Address"
+              withAsterisk
+              key={form.key("address.street")}
+              {...form.getInputProps("address.street")}
+            />
+
+            <Group grow>
+              <TextInput
+                mt="md"
+                label="City"
+                placeholder="City"
+                withAsterisk
+                key={form.key("address.city")}
+                {...form.getInputProps("address.city")}
+              />
+              <TextInput
+                mt="md"
+                label="Zip"
+                placeholder="Zip"
+                withAsterisk
+                key={form.key("address.zip")}
+                {...form.getInputProps("address.zip")}
+              />
+            </Group>
+
+            <Group align="center" mt="xl" grow>
+              <Button type="submit" disabled={isSaveDisabled}>
+                Save
+              </Button>
+            </Group>
+          </Stack>
+        </form>
       </Accordion.Panel>
     </Accordion.Item>
   );

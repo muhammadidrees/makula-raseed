@@ -27,7 +27,7 @@ function onFromSubmit(
   });
 }
 
-export function PersonalInfoForm() {
+export default function PersonalInfoAccordian() {
   const { formData, setFormData } = usePersonalFormContext();
 
   const form = useForm<PersonalInfo>({
@@ -47,77 +47,6 @@ export function PersonalInfoForm() {
   const isSaveDisabled =
     JSON.stringify(form.values) === JSON.stringify(formData);
 
-  return (
-    <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
-      <Stack>
-        <TextInput
-          label="Name"
-          placeholder="Name"
-          withAsterisk
-          key={form.key("name")}
-          {...form.getInputProps("name")}
-        />
-        <TextInput
-          mt="md"
-          label="Email"
-          placeholder="Email"
-          withAsterisk
-          key={form.key("email")}
-          {...form.getInputProps("email")}
-        />
-
-        <TextInput
-          mt="md"
-          label="Tax ID"
-          placeholder="Your CNIC or Tax ID"
-          withAsterisk
-          key={form.key("taxID")}
-          {...form.getInputProps("taxID")}
-        />
-
-        <TextInput
-          mt="md"
-          label="Address"
-          placeholder="Address"
-          withAsterisk
-          key={form.key("address.street")}
-          {...form.getInputProps("address.street")}
-        />
-
-        <Group grow>
-          <Select
-            mt="md"
-            label="City"
-            placeholder="City"
-            withAsterisk
-            key={form.key("address.city")}
-            data={["Karachi", "Lahore"]}
-            searchable
-            {...form.getInputProps("address.city")}
-          />
-          <TextInput
-            mt="md"
-            label="Zip"
-            placeholder="Zip"
-            withAsterisk
-            key={form.key("address.zip")}
-            {...form.getInputProps("address.zip")}
-          />
-        </Group>
-
-        <Group align="center" mt="xl" grow>
-          <Button type="submit" disabled={isSaveDisabled}>
-            Save
-          </Button>
-        </Group>
-      </Stack>
-    </form>
-  );
-}
-
-export default function PersonalInfoAccordian() {
-  const { formData } = usePersonalFormContext();
-
   const isFormEmpty =
     formData.name === "" ||
     formData.email === "" ||
@@ -128,10 +57,77 @@ export default function PersonalInfoAccordian() {
 
   return (
     <Accordion.Item key={"Personal Info"} value={"Personal Info"}>
-      <AccordianControl label={"Personal Info"} isFormEmpty={isFormEmpty} />
+      <AccordianControl
+        label={"Personal Info"}
+        isFormEmpty={isFormEmpty}
+        isFormUnsaved={!isSaveDisabled}
+      />
 
       <Accordion.Panel>
-        <PersonalInfoForm />
+        <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
+          <Stack>
+            <TextInput
+              label="Name"
+              placeholder="Name"
+              withAsterisk
+              key={form.key("name")}
+              {...form.getInputProps("name")}
+            />
+            <TextInput
+              mt="md"
+              label="Email"
+              placeholder="Email"
+              withAsterisk
+              key={form.key("email")}
+              {...form.getInputProps("email")}
+            />
+
+            <TextInput
+              mt="md"
+              label="Tax ID"
+              placeholder="Your CNIC or Tax ID"
+              withAsterisk
+              key={form.key("taxID")}
+              {...form.getInputProps("taxID")}
+            />
+
+            <TextInput
+              mt="md"
+              label="Address"
+              placeholder="Address"
+              withAsterisk
+              key={form.key("address.street")}
+              {...form.getInputProps("address.street")}
+            />
+
+            <Group grow>
+              <Select
+                mt="md"
+                label="City"
+                placeholder="City"
+                withAsterisk
+                key={form.key("address.city")}
+                data={["Karachi", "Lahore"]}
+                searchable
+                {...form.getInputProps("address.city")}
+              />
+              <TextInput
+                mt="md"
+                label="Zip"
+                placeholder="Zip"
+                withAsterisk
+                key={form.key("address.zip")}
+                {...form.getInputProps("address.zip")}
+              />
+            </Group>
+
+            <Group align="center" mt="xl" grow>
+              <Button type="submit" disabled={isSaveDisabled}>
+                Save
+              </Button>
+            </Group>
+          </Stack>
+        </form>
       </Accordion.Panel>
     </Accordion.Item>
   );

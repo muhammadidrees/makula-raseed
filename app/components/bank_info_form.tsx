@@ -20,7 +20,7 @@ function onFromSubmit(
   });
 }
 
-export function BankInfoForm() {
+export default function BankInfoAccordion() {
   const { formData, setFormData } = useBankFormContext();
 
   const form = useForm<BankInfo>({
@@ -36,54 +36,6 @@ export function BankInfoForm() {
   const isSaveDisabled =
     JSON.stringify(form.values) === JSON.stringify(formData);
 
-  return (
-    <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
-      <Stack>
-        <TextInput
-          label="Bank Name"
-          placeholder="Bank Name"
-          withAsterisk
-          key={form.key("name")}
-          {...form.getInputProps("name")}
-        />
-        <TextInput
-          mt="md"
-          label="Account Title"
-          placeholder="Account Title"
-          withAsterisk
-          key={form.key("accountTitle")}
-          {...form.getInputProps("accountTitle")}
-        />
-        <TextInput
-          mt="md"
-          label="IBAN"
-          placeholder="IBAN"
-          withAsterisk
-          key={form.key("iban")}
-          {...form.getInputProps("iban")}
-        />
-        <TextInput
-          mt="md"
-          label="BIC"
-          placeholder="BIC"
-          withAsterisk
-          key={form.key("bic")}
-          {...form.getInputProps("bic")}
-        />
-
-        <Group align="center" mt="xl" grow>
-          <Button type="submit" disabled={isSaveDisabled}>
-            Save
-          </Button>
-        </Group>
-      </Stack>
-    </form>
-  );
-}
-
-export default function BankInfoAccordion() {
-  const { formData } = useBankFormContext();
-
   const isFormEmpty =
     formData.name === "" &&
     formData.accountTitle === "" &&
@@ -92,9 +44,53 @@ export default function BankInfoAccordion() {
 
   return (
     <Accordion.Item key={"Bank Info"} value={"Bank Info"}>
-      <AccordianControl label={"Bank Info"} isFormEmpty={isFormEmpty} />
+      <AccordianControl
+        label={"Bank Info"}
+        isFormEmpty={isFormEmpty}
+        isFormUnsaved={!isSaveDisabled}
+      />
       <Accordion.Panel>
-        <BankInfoForm />
+        <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
+          <Stack>
+            <TextInput
+              label="Bank Name"
+              placeholder="Bank Name"
+              withAsterisk
+              key={form.key("name")}
+              {...form.getInputProps("name")}
+            />
+            <TextInput
+              mt="md"
+              label="Account Title"
+              placeholder="Account Title"
+              withAsterisk
+              key={form.key("accountTitle")}
+              {...form.getInputProps("accountTitle")}
+            />
+            <TextInput
+              mt="md"
+              label="IBAN"
+              placeholder="IBAN"
+              withAsterisk
+              key={form.key("iban")}
+              {...form.getInputProps("iban")}
+            />
+            <TextInput
+              mt="md"
+              label="BIC"
+              placeholder="BIC"
+              withAsterisk
+              key={form.key("bic")}
+              {...form.getInputProps("bic")}
+            />
+
+            <Group align="center" mt="xl" grow>
+              <Button type="submit" disabled={isSaveDisabled}>
+                Save
+              </Button>
+            </Group>
+          </Stack>
+        </form>
       </Accordion.Panel>
     </Accordion.Item>
   );
