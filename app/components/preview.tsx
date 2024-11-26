@@ -5,10 +5,9 @@ import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import dynamic from "next/dynamic";
 import { useCompanyFormContext } from "../context/CompanyInfoContext";
 import { usePersonalFormContext } from "../context/PersonalInfoContext";
-import { useBankFormContext } from "../context/BankInfoContext";
-import { Box, Center, Stepper } from "@mantine/core";
-import { Text as MantineText } from "@mantine/core";
-import { BankInfo, CompanyInfo, PersonalInfo } from "../types";
+import { CompanyInfo, InvoiceData, PersonalInfo } from "../types";
+import { useInvoiceDataContext } from "../context/InvoiceDataContext";
+import { useEffect, useState } from "react";
 
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -104,16 +103,24 @@ const styles = StyleSheet.create({
     color: "#666666",
   },
 });
-
 function MyDocument({
   companyFormData,
   personalFormData,
-  bankFromData,
+  invoiceFromData,
 }: {
   companyFormData: CompanyInfo;
   personalFormData: PersonalInfo;
-  bankFromData: BankInfo;
+  invoiceFromData: InvoiceData;
 }) {
+  // Calculate Subtotal and Total
+  const subtotal = invoiceFromData.items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const taxRate = 0; // Update as necessary
+  const tax = subtotal * (taxRate / 100);
+  const total = (subtotal + tax) * 1.0;
+
   return (
     <Document title="Invoice">
       <Page size="A4" style={styles.page}>
@@ -122,8 +129,13 @@ function MyDocument({
           <Text style={styles.logo}>Invoice</Text>
           <View style={styles.invoiceDetails}>
             <Text>Invoice #AB2324-01</Text>
-            <Text>Issued: 01 Aug, 2023</Text>
-            <Text>Due: 15 Aug, 2023</Text>
+            <Text>Issued: {invoiceFromData.date.toLocaleDateString()}</Text>
+            <Text>
+              Due:{" "}
+              {new Date(
+                invoiceFromData.date.getTime() + 14 * 86400000
+              ).toLocaleDateString()}
+            </Text>
           </View>
         </View>
 
@@ -148,41 +160,54 @@ function MyDocument({
 
         {/* Table */}
         <View style={styles.table}>
+          {/* Table Header */}
           <View style={styles.tableHeader}>
             <Text style={styles.tableCellDescription}>Description</Text>
-            <Text style={styles.tableCell}>Rate</Text>
+            <Text style={styles.tableCell}>Rate (€)</Text>
             <Text style={styles.tableCell}>Qty</Text>
-            <Text style={styles.tableCell}>Line Total</Text>
+            <Text style={styles.tableCell}>Line Total (€)</Text>
           </View>
-          <View style={styles.tableRow}>
-            <Text style={styles.tableCellDescription}>Service Name</Text>
-            <Text style={styles.tableCell}>$100.00</Text>
-            <Text style={styles.tableCell}>2</Text>
-            <Text style={styles.tableCell}>$200.00</Text>
-          </View>
-          <View style={styles.tableRow}>
-            <Text style={styles.tableCellDescription}>Service Name</Text>
-            <Text style={styles.tableCell}>$100.00</Text>
-            <Text style={styles.tableCell}>2</Text>
-            <Text style={styles.tableCell}>$200.00</Text>
-          </View>
+
+          {/* Table Rows */}
+          {invoiceFromData.items.map((item) => (
+            <View key={item.key} style={styles.tableRow}>
+              <Text style={styles.tableCellDescription}>
+                {item.description}
+              </Text>
+              <Text style={styles.tableCell}>{item.price.toFixed(2)}</Text>
+              <Text style={styles.tableCell}>{item.quantity}</Text>
+              <Text style={styles.tableCell}>
+                {(item.price * item.quantity).toFixed(2)}
+              </Text>
+            </View>
+          ))}
+
+          {/* Subtotal and Total Rows */}
           <View style={styles.totalRow}>
             <Text style={styles.tableCellDescription}></Text>
             <Text style={styles.tableCell}></Text>
             <Text style={styles.totalCellLabel}>Subtotal</Text>
-            <Text style={styles.totalCellValue}>$400.00</Text>
+            <Text style={styles.totalCellValue}>{subtotal.toFixed(2)} €</Text>
           </View>
+          {taxRate > 0 && (
+            <View style={styles.totalRow}>
+              <Text style={styles.tableCellDescription}></Text>
+              <Text style={styles.tableCell}></Text>
+              <Text style={styles.totalCellLabel}>Tax ({taxRate}%)</Text>
+              <Text style={styles.totalCellValue}>{tax.toFixed(2)} €</Text>
+            </View>
+          )}
           <View style={styles.totalRow}>
             <Text style={styles.tableCellDescription}></Text>
             <Text style={styles.tableCell}></Text>
             <Text style={styles.totalCellLabel}>Total</Text>
-            <Text style={styles.totalCellValue}>$400.00</Text>
+            <Text style={styles.totalCellValue}>{total.toFixed(2)} €</Text>
           </View>
         </View>
 
         {/* Footer */}
         <Text style={styles.footer}>
-          Amount due: US$ 400.00{"\n"}
+          Amount due: {total.toFixed(2)} €{"\n"}
           Thank you for your business! Payment is due upon receipt of this
           invoice.
         </Text>
@@ -194,7 +219,17 @@ function MyDocument({
 export function PdfView() {
   const { companyFormData } = useCompanyFormContext();
   const { personalFormData } = usePersonalFormContext();
-  const { bankFromData } = useBankFormContext();
+  const { invoiceFromData } = useInvoiceDataContext();
+
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, [invoiceFromData]);
+
+  if (!isReady) {
+    return <div>Loading PDF...</div>;
+  }
 
   return (
     <div style={{ height: "90vh", display: "flex", flexDirection: "column" }}>
@@ -202,7 +237,7 @@ export function PdfView() {
         <MyDocument
           personalFormData={personalFormData}
           companyFormData={companyFormData}
-          bankFromData={bankFromData}
+          invoiceFromData={invoiceFromData}
         />
       </PDFViewer>
     </div>
@@ -210,59 +245,5 @@ export function PdfView() {
 }
 
 export default function Preview() {
-  const { companyFormData } = useCompanyFormContext();
-  const { personalFormData } = usePersonalFormContext();
-  const { bankFromData } = useBankFormContext();
-
-  const isCompanyFormEmpty =
-    companyFormData.name === "" &&
-    companyFormData.address.street === "" &&
-    companyFormData.address.city === "" &&
-    companyFormData.address.zip === "";
-
-  const isPersonalFormEmpty =
-    personalFormData.name === "" ||
-    personalFormData.email === "" ||
-    personalFormData.taxID === "" ||
-    personalFormData.address.street === "" ||
-    personalFormData.address.city === "" ||
-    personalFormData.address.zip === "";
-
-  const isBankFormEmpty =
-    bankFromData.name === "" &&
-    bankFromData.accountTitle === "" &&
-    bankFromData.iban === "" &&
-    bankFromData.bic === "";
-
-  const showPreview =
-    !isCompanyFormEmpty && !isPersonalFormEmpty && !isBankFormEmpty;
-
-  const active = isPersonalFormEmpty ? 0 : isBankFormEmpty ? 1 : 2;
-
-  return showPreview ? (
-    <PdfView />
-  ) : (
-    <Center h="85vh">
-      <Box>
-        <MantineText mb="xl" size="xl" c="red">
-          Please complete all the steps to preview the invoice!
-        </MantineText>
-
-        <Stepper active={active} orientation="vertical">
-          <Stepper.Step
-            label="Step 1"
-            description="Complete & Save Personal Information"
-          />
-          <Stepper.Step
-            label="Step 2"
-            description="Complete & Save Bank Info"
-          />
-          <Stepper.Step
-            label="Step 3"
-            description="Complete & Save Company Info"
-          />
-        </Stepper>
-      </Box>
-    </Center>
-  );
+  return <PdfView />;
 }

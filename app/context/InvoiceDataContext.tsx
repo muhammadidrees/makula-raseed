@@ -3,7 +3,7 @@ import { InvoiceData } from "../types";
 import { randomId } from "@mantine/hooks";
 
 interface InvoiceDataContextProps {
-  formData: InvoiceData;
+  invoiceFromData: InvoiceData;
   setFormData: React.Dispatch<React.SetStateAction<InvoiceData>>;
 }
 
@@ -35,7 +35,9 @@ export const InvoiceDataProvider = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <InvoiceDataContext.Provider value={{ formData, setFormData }}>
+    <InvoiceDataContext.Provider
+      value={{ invoiceFromData: formData, setFormData }}
+    >
       {children}
     </InvoiceDataContext.Provider>
   );

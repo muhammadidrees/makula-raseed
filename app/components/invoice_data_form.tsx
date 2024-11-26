@@ -16,22 +16,31 @@ import { InvoiceData } from "../types";
 import { useInvoiceDataContext } from "../context/InvoiceDataContext";
 import { IconTrash, IconCurrencyEuro } from "@tabler/icons-react";
 import { randomId } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 
-function onFormSubmit(
+function onFromSubmit(
   form: UseFormReturnType<InvoiceData>,
   setFormData: React.Dispatch<React.SetStateAction<InvoiceData>>
 ) {
-  console.log(form.values);
-  setFormData(form.values);
+  console.log(form.getValues());
+  setFormData(form.getValues());
+  notifications.show({
+    color: "green",
+    title: "Invoice Data Saved",
+    message: "Invoice Data has been saved successfully",
+  });
 }
 
-export default function InvoiceDataForm() {
-  const { formData, setFormData } = useInvoiceDataContext();
+export default function InvoiceDataAccordian() {
+  const { invoiceFromData: formData, setFormData } = useInvoiceDataContext();
 
   const form = useForm<InvoiceData>({
     mode: "uncontrolled",
     initialValues: formData,
   });
+
+  const isSaveDisabled =
+    JSON.stringify(form.getValues()) === JSON.stringify(formData);
 
   const fields = form.getValues().items.map((item, index) => (
     <Group key={item.key}>
@@ -69,52 +78,56 @@ export default function InvoiceDataForm() {
   ));
 
   return (
-    <Stack>
-      <MonthPickerInput
-        mt="md"
-        label="Invoice Date"
-        placeholder="Invoice Date"
-        {...form.getInputProps("date")}
-      />
-
-      {fields.length > 0 ? (
-        <Group>
-          <Text fw={500} size="sm">
-            Invoice Items
-          </Text>
-        </Group>
-      ) : (
-        <Text c="dimmed" ta="center">
-          No items added...
-        </Text>
-      )}
-
-      {fields}
-
-      <Group align="center" mb="xl" grow>
-        <Button
-          onClick={() =>
-            form.insertListItem("items", {
-              description: "",
-              quantity: 1,
-              price: 0,
-              key: randomId(),
-            })
-          }
-        >
-          Add item
-        </Button>
-      </Group>
-    </Stack>
-  );
-}
-
-export function InvoiceDataAccordion() {
-  return (
-    <Accordion.Item key={"Invoice Date Info"} value={"Invoice Date Info"}>
-      <Accordion.Control>{"Invoice Date Info"}</Accordion.Control>
+    <Accordion.Item key={"Invoice Data"} value={"Invoice Data"}>
+      <Accordion.Control>Invoice Data</Accordion.Control>
       <Accordion.Panel>
-        <InvoiceDataForm />
+        <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
+          <Stack>
+            <MonthPickerInput
+              mt="md"
+              label="Invoice Date"
+              placeholder="Invoice Date"
+              withAsterisk
+              key={form.key("date")}
+              {...form.getInputProps("date")}
+            />
+
+            {fields.length > 0 ? (
+              <Group>
+                <Text fw={500} size="sm">
+                  Invoice Items
+                </Text>
+              </Group>
+            ) : (
+              <Text c="dimmed" ta="center">
+                No items added...
+              </Text>
+            )}
+
+            {fields}
+
+            <Group align="center" mb="xl" grow>
+              <Button
+                onClick={() =>
+                  form.insertListItem("items", {
+                    description: "",
+                    quantity: 1,
+                    price: 0,
+                    key: randomId(),
+                  })
+                }
+              >
+                Add item
+              </Button>
+            </Group>
+
+            <Group align="center" mt="xl" grow>
+              <Button type="submit" disabled={isSaveDisabled}>
+                Save
+              </Button>
+            </Group>
+          </Stack>
+        </form>
       </Accordion.Panel>
     </Accordion.Item>
   );
