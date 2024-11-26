@@ -26,29 +26,39 @@ export const usePersonalFormContext = () => {
   return context;
 };
 
-export const PersonalFormProvider = ({ children }: { children: ReactNode }) => {
-  // Load initial state from localStorage
-  const loadInitialState = (): PersonalInfo => {
-    const storedData = localStorage.getItem("personalFormData");
-    return storedData
-      ? JSON.parse(storedData)
-      : {
-          name: "",
-          email: "",
-          taxID: "",
-          address: {
-            street: "",
-            city: "",
-            zip: "",
-          },
-        };
-  };
+// Check if we are running in the browser
+const isBrowser = typeof window !== "undefined";
 
+// Load initial state from localStorage
+const loadInitialState = (): PersonalInfo => {
+  if (isBrowser) {
+    const storedData = localStorage.getItem("personalFormData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+
+      return parsedData;
+    }
+  }
+
+  return {
+    name: "",
+    email: "",
+    taxID: "",
+    address: {
+      street: "",
+      city: "",
+      zip: "",
+    },
+  };
+};
+
+export const PersonalFormProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<PersonalInfo>(loadInitialState);
 
   // Save formData to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("personalFormData", JSON.stringify(formData));
+    if (isBrowser)
+      localStorage.setItem("personalFormData", JSON.stringify(formData));
   }, [formData]);
 
   return (

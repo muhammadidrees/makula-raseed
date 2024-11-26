@@ -26,27 +26,38 @@ export const useCompanyFormContext = () => {
   return context;
 };
 
+// Check if we are running in the browser
+const isBrowser = typeof window !== "undefined";
+
+const loadInitialState = (): CompanyInfo => {
+  if (isBrowser) {
+    const storedData = localStorage.getItem("companyFormData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+
+      return parsedData;
+    }
+  }
+
+  return {
+    name: "",
+    address: {
+      street: "",
+      city: "",
+      zip: "",
+    },
+  };
+};
+
 export const CompanyFormProvider = ({ children }: { children: ReactNode }) => {
   // Load initial state from localStorage
-  const loadInitialState = (): CompanyInfo => {
-    const storedData = localStorage.getItem("companyFormData");
-    return storedData
-      ? JSON.parse(storedData)
-      : {
-          name: "",
-          address: {
-            street: "",
-            city: "",
-            zip: "",
-          },
-        };
-  };
 
   const [formData, setFormData] = useState<CompanyInfo>(loadInitialState);
 
   // Save formData to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("companyFormData", JSON.stringify(formData));
+    if (isBrowser)
+      localStorage.setItem("companyFormData", JSON.stringify(formData));
   }, [formData]);
 
   return (

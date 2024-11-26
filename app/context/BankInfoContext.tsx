@@ -26,25 +26,37 @@ export const useBankFormContext = () => {
   return context;
 };
 
-export const BankFormProvider = ({ children }: { children: ReactNode }) => {
-  // Load initial state from localStorage
-  const loadInitialState = (): BankInfo => {
-    const storedData = localStorage.getItem("bankFormData");
-    return storedData
-      ? JSON.parse(storedData)
-      : {
-          name: "",
-          accountTitle: "",
-          iban: "",
-          bic: "",
-        };
-  };
+// Check if we are running in the browser
+const isBrowser = typeof window !== "undefined";
 
+// Load initial state from localStorage
+const loadInitialState = (): BankInfo => {
+  if (isBrowser) {
+    const storedData = localStorage.getItem("bankFormData");
+
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+
+      return parsedData;
+    }
+  }
+
+  return {
+    name: "",
+    accountTitle: "",
+    iban: "",
+    bic: "",
+  };
+};
+
+export const BankFormProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<BankInfo>(loadInitialState);
 
   // Save formData to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("bankFormData", JSON.stringify(formData));
+    if (isBrowser) {
+      localStorage.setItem("bankFormData", JSON.stringify(formData));
+    }
   }, [formData]);
 
   return (
