@@ -75,7 +75,7 @@ jobs:
 
       - name: Set git name and email
         run: |
-          git config --global user.name "Idrees (GitHub Actions)"
+          git config --global user.name "muhammadidrees"
           git config --global user.email "midrees097@gmail.com"
 
       - name: Deploy
