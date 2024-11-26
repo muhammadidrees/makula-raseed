@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { BankInfo } from "../types";
 
 interface BankInfoFormContextType {
@@ -21,12 +27,25 @@ export const useBankFormContext = () => {
 };
 
 export const BankFormProvider = ({ children }: { children: ReactNode }) => {
-  const [formData, setFormData] = useState<BankInfo>({
-    name: "",
-    accountTitle: "",
-    iban: "",
-    bic: "",
-  });
+  // Load initial state from localStorage
+  const loadInitialState = (): BankInfo => {
+    const storedData = localStorage.getItem("bankFormData");
+    return storedData
+      ? JSON.parse(storedData)
+      : {
+          name: "",
+          accountTitle: "",
+          iban: "",
+          bic: "",
+        };
+  };
+
+  const [formData, setFormData] = useState<BankInfo>(loadInitialState);
+
+  // Save formData to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("bankFormData", JSON.stringify(formData));
+  }, [formData]);
 
   return (
     <BankInfoFormContext.Provider

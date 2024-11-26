@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { InvoiceData } from "../types";
 import { randomId } from "@mantine/hooks";
 
@@ -22,17 +28,54 @@ export const useInvoiceDataContext = (): InvoiceDataContextProps => {
 };
 
 export const InvoiceDataProvider = ({ children }: { children: ReactNode }) => {
-  const [formData, setFormData] = useState<InvoiceData>({
-    date: new Date(),
-    items: [
-      {
-        description: "",
-        quantity: 1,
-        price: 0,
-        key: randomId(),
-      },
-    ],
-  });
+  // Load initial state from localStorage
+  const loadInitialState = (): InvoiceData => {
+    try {
+      const storedData = localStorage.getItem("invoiceData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+
+        // Convert date field back into a Date object
+        if (parsedData.date) {
+          parsedData.date = new Date(parsedData.date);
+        }
+
+        return parsedData;
+      }
+
+      // Default state
+      return {
+        date: new Date(),
+        items: [
+          {
+            description: "",
+            quantity: 1,
+            price: 0,
+            key: randomId(),
+          },
+        ],
+      };
+    } catch {
+      return {
+        date: new Date(),
+        items: [
+          {
+            description: "",
+            quantity: 1,
+            price: 0,
+            key: randomId(),
+          },
+        ],
+      };
+    }
+  };
+
+  const [formData, setFormData] = useState<InvoiceData>(loadInitialState);
+
+  // Save formData to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("invoiceData", JSON.stringify(formData));
+  }, [formData]);
 
   return (
     <InvoiceDataContext.Provider

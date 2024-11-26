@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { PersonalInfo } from "../types";
 
 interface PersonalInfoFormContextType {
@@ -21,16 +27,29 @@ export const usePersonalFormContext = () => {
 };
 
 export const PersonalFormProvider = ({ children }: { children: ReactNode }) => {
-  const [formData, setFormData] = useState<PersonalInfo>({
-    name: "",
-    email: "",
-    taxID: "",
-    address: {
-      street: "",
-      city: "",
-      zip: "",
-    },
-  });
+  // Load initial state from localStorage
+  const loadInitialState = (): PersonalInfo => {
+    const storedData = localStorage.getItem("personalFormData");
+    return storedData
+      ? JSON.parse(storedData)
+      : {
+          name: "",
+          email: "",
+          taxID: "",
+          address: {
+            street: "",
+            city: "",
+            zip: "",
+          },
+        };
+  };
+
+  const [formData, setFormData] = useState<PersonalInfo>(loadInitialState);
+
+  // Save formData to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("personalFormData", JSON.stringify(formData));
+  }, [formData]);
 
   return (
     <PersonalInfoFormContext.Provider

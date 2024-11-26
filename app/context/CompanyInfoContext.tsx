@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { CompanyInfo } from "../types";
 
 interface CompanyInfoFormContextType {
@@ -21,14 +27,27 @@ export const useCompanyFormContext = () => {
 };
 
 export const CompanyFormProvider = ({ children }: { children: ReactNode }) => {
-  const [formData, setFormData] = useState<CompanyInfo>({
-    name: "",
-    address: {
-      street: "",
-      city: "",
-      zip: "",
-    },
-  });
+  // Load initial state from localStorage
+  const loadInitialState = (): CompanyInfo => {
+    const storedData = localStorage.getItem("companyFormData");
+    return storedData
+      ? JSON.parse(storedData)
+      : {
+          name: "",
+          address: {
+            street: "",
+            city: "",
+            zip: "",
+          },
+        };
+  };
+
+  const [formData, setFormData] = useState<CompanyInfo>(loadInitialState);
+
+  // Save formData to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("companyFormData", JSON.stringify(formData));
+  }, [formData]);
 
   return (
     <CompanyInfoFormContext.Provider
