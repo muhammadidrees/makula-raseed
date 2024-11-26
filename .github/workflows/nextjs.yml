@@ -70,5 +70,8 @@ jobs:
       - name: Build
         run: ${{ steps.detect-package-manager.outputs.runner }} run build
 
+      - name: List files
+        run: ls
+
       - name: Deploy
         run: ${{ steps.detect-package-manager.outputs.runner }} run deploy
