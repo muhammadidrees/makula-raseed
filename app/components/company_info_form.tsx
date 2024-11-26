@@ -21,7 +21,7 @@ function onFromSubmit(
 }
 
 export default function CompanyInfoAccordion() {
-  const { formData, setFormData } = useCompanyFormContext();
+  const { companyFormData: formData, setFormData } = useCompanyFormContext();
 
   const form = useForm<CompanyInfo>({
     initialValues: formData,

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { PersonalInfo } from "../types";
 
 interface PersonalInfoFormContextType {
-  formData: PersonalInfo;
+  personalFormData: PersonalInfo;
   setFormData: React.Dispatch<React.SetStateAction<PersonalInfo>>;
 }
 
@@ -33,7 +33,9 @@ export const PersonalFormProvider = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <PersonalInfoFormContext.Provider value={{ formData, setFormData }}>
+    <PersonalInfoFormContext.Provider
+      value={{ personalFormData: formData, setFormData }}
+    >
       {children}
     </PersonalInfoFormContext.Provider>
   );

@@ -21,7 +21,7 @@ function onFromSubmit(
 }
 
 export default function BankInfoAccordion() {
-  const { formData, setFormData } = useBankFormContext();
+  const { bankFromData: formData, setFormData } = useBankFormContext();
 
   const form = useForm<BankInfo>({
     initialValues: formData,

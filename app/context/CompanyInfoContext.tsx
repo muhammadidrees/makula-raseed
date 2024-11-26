@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { CompanyInfo } from "../types";
 
 interface CompanyInfoFormContextType {
-  formData: CompanyInfo;
+  companyFormData: CompanyInfo;
   setFormData: React.Dispatch<React.SetStateAction<CompanyInfo>>;
 }
 
@@ -31,7 +31,9 @@ export const CompanyFormProvider = ({ children }: { children: ReactNode }) => {
   });
 
   return (
-    <CompanyInfoFormContext.Provider value={{ formData, setFormData }}>
+    <CompanyInfoFormContext.Provider
+      value={{ companyFormData: formData, setFormData }}
+    >
       {children}
     </CompanyInfoFormContext.Provider>
   );

@@ -28,7 +28,7 @@ function onFromSubmit(
 }
 
 export default function PersonalInfoAccordian() {
-  const { formData, setFormData } = usePersonalFormContext();
+  const { personalFormData: formData, setFormData } = usePersonalFormContext();
 
   const form = useForm<PersonalInfo>({
     initialValues: formData,

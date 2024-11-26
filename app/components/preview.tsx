@@ -3,6 +3,12 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 import dynamic from "next/dynamic";
+import { useCompanyFormContext } from "../context/CompanyInfoContext";
+import { usePersonalFormContext } from "../context/PersonalInfoContext";
+import { useBankFormContext } from "../context/BankInfoContext";
+import { Box, Center, Stepper } from "@mantine/core";
+import { Text as MantineText } from "@mantine/core";
+import { BankInfo, CompanyInfo, PersonalInfo } from "../types";
 
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -99,13 +105,21 @@ const styles = StyleSheet.create({
   },
 });
 
-function MyDocument() {
+function MyDocument({
+  companyFormData,
+  personalFormData,
+  bankFromData,
+}: {
+  companyFormData: CompanyInfo;
+  personalFormData: PersonalInfo;
+  bankFromData: BankInfo;
+}) {
   return (
     <Document title="Invoice">
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>Panda, Inc</Text>
+          <Text style={styles.logo}>Invoice</Text>
           <View style={styles.invoiceDetails}>
             <Text>Invoice #AB2324-01</Text>
             <Text>Issued: 01 Aug, 2023</Text>
@@ -116,21 +130,20 @@ function MyDocument() {
         {/* Billed To and From */}
         <View style={styles.section}>
           <Text style={styles.title}>Billed To:</Text>
-          <Text style={styles.text}>Company Name</Text>
-          <Text style={styles.text}>Company Address</Text>
-          <Text style={styles.text}>City, Country - 00000</Text>
-          <Text style={styles.text}>+0 (000) 123-4567</Text>
+          <Text style={styles.text}>{companyFormData.name}</Text>
+          <Text style={styles.text}>{companyFormData.address.street}</Text>
+          <Text style={styles.text}>{companyFormData.address.city}</Text>
+          <Text style={styles.text}>{companyFormData.address.zip}</Text>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.title}>From:</Text>
-          <Text style={styles.text}>Panda, Inc</Text>
-          <Text style={styles.text}>Business Address</Text>
-          <Text style={styles.text}>City, State, IN - 000 000</Text>
-          <Text style={styles.text}>TAX ID: 00XXXXX1234X0XX</Text>
-          <Text style={styles.text}>Digital Product Designer</Text>
-          <Text style={styles.text}>+91 00000 00000</Text>
-          <Text style={styles.text}>hello@email.com</Text>
+          <Text style={styles.text}>{personalFormData.name}</Text>
+          <Text style={styles.text}>{personalFormData.taxID}</Text>
+          <Text style={styles.text}>{personalFormData.email}</Text>
+          <Text style={styles.text}>{personalFormData.address.street}</Text>
+          <Text style={styles.text}>{personalFormData.address.city}</Text>
+          <Text style={styles.text}>{personalFormData.address.zip}</Text>
         </View>
 
         {/* Table */}
@@ -178,12 +191,78 @@ function MyDocument() {
   );
 }
 
-export default function Preview() {
+export function PdfView() {
+  const { companyFormData } = useCompanyFormContext();
+  const { personalFormData } = usePersonalFormContext();
+  const { bankFromData } = useBankFormContext();
+
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ height: "90vh", display: "flex", flexDirection: "column" }}>
       <PDFViewer style={{ flex: 1 }}>
-        <MyDocument />
+        <MyDocument
+          personalFormData={personalFormData}
+          companyFormData={companyFormData}
+          bankFromData={bankFromData}
+        />
       </PDFViewer>
     </div>
+  );
+}
+
+export default function Preview() {
+  const { companyFormData } = useCompanyFormContext();
+  const { personalFormData } = usePersonalFormContext();
+  const { bankFromData } = useBankFormContext();
+
+  const isCompanyFormEmpty =
+    companyFormData.name === "" &&
+    companyFormData.address.street === "" &&
+    companyFormData.address.city === "" &&
+    companyFormData.address.zip === "";
+
+  const isPersonalFormEmpty =
+    personalFormData.name === "" ||
+    personalFormData.email === "" ||
+    personalFormData.taxID === "" ||
+    personalFormData.address.street === "" ||
+    personalFormData.address.city === "" ||
+    personalFormData.address.zip === "";
+
+  const isBankFormEmpty =
+    bankFromData.name === "" &&
+    bankFromData.accountTitle === "" &&
+    bankFromData.iban === "" &&
+    bankFromData.bic === "";
+
+  const showPreview =
+    !isCompanyFormEmpty && !isPersonalFormEmpty && !isBankFormEmpty;
+
+  const active = isPersonalFormEmpty ? 0 : isBankFormEmpty ? 1 : 2;
+
+  return showPreview ? (
+    <PdfView />
+  ) : (
+    <Center h="85vh">
+      <Box>
+        <MantineText mb="xl" size="xl" c="red">
+          Please complete all the steps to preview the invoice!
+        </MantineText>
+
+        <Stepper active={active} orientation="vertical">
+          <Stepper.Step
+            label="Step 1"
+            description="Complete & Save Personal Information"
+          />
+          <Stepper.Step
+            label="Step 2"
+            description="Complete & Save Bank Info"
+          />
+          <Stepper.Step
+            label="Step 3"
+            description="Complete & Save Company Info"
+          />
+        </Stepper>
+      </Box>
+    </Center>
   );
 }
