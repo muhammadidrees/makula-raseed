@@ -73,5 +73,10 @@ jobs:
       - name: List files
         run: ls
 
+      - name: Set git name and email
+        run: |
+          git config --global user.name "Idrees (GitHub Actions)"
+          git config --global user.email "midrees097@gmail.com"
+
       - name: Deploy
         run: ${{ steps.detect-package-manager.outputs.runner }} run deploy
