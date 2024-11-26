@@ -73,4 +73,4 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} run build
 
       - name: Deploy
-        run: ${{ steps.detect-package-manager.outputs.runner }} run export
+        run: ${{ steps.detect-package-manager.outputs.runner }} run deploy
