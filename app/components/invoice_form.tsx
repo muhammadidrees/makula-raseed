@@ -10,8 +10,8 @@ import InvoiceDataInfoForm from "./invoice_data_form";
 export default function InvoiceForm() {
   return (
     <Box>
+      <InvoiceDataInfoForm />
       <Accordion variant="separated">
-        <InvoiceDataInfoForm />
         <PersonalInfoFormAccordian />
         <BankInfoFormAccordian />
         <CompanyInfoAccordion />

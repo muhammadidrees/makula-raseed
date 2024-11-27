@@ -6,7 +6,6 @@ import {
   Button,
   Group,
   Stack,
-  Accordion,
   ActionIcon,
   Text,
   NumberInput,
@@ -31,7 +30,7 @@ function onFromSubmit(
   });
 }
 
-export default function InvoiceDataAccordian() {
+export default function InvoiceDataForm() {
   const { invoiceFromData: formData, setFormData } = useInvoiceDataContext();
 
   const form = useForm<InvoiceData>({
@@ -78,57 +77,52 @@ export default function InvoiceDataAccordian() {
   ));
 
   return (
-    <Accordion.Item key={"Invoice Data"} value={"Invoice Data"}>
-      <Accordion.Control>Invoice Data</Accordion.Control>
-      <Accordion.Panel>
-        <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
-          <Stack>
-            <MonthPickerInput
-              mt="md"
-              label="Invoice Date"
-              placeholder="Invoice Date"
-              withAsterisk
-              key={form.key("date")}
-              {...form.getInputProps("date")}
-            />
+    <form onSubmit={form.onSubmit(() => onFromSubmit(form, setFormData))}>
+      <Stack>
+        <MonthPickerInput
+          mt="md"
+          label="Invoice Date"
+          placeholder="Invoice Date"
+          withAsterisk
+          key={form.key("date")}
+          {...form.getInputProps("date")}
+        />
 
-            {fields.length > 0 ? (
-              <Group>
-                <Text fw={500} size="sm">
-                  Invoice Items
-                </Text>
-              </Group>
-            ) : (
-              <Text c="dimmed" ta="center">
-                No items added...
-              </Text>
-            )}
+        {fields.length > 0 ? (
+          <Group>
+            <Text fw={500} size="sm">
+              Invoice Items
+            </Text>
+          </Group>
+        ) : (
+          <Text c="dimmed" ta="center">
+            No items added...
+          </Text>
+        )}
 
-            {fields}
+        {fields}
 
-            <Group align="center" mb="xl" grow>
-              <Button
-                onClick={() =>
-                  form.insertListItem("items", {
-                    description: "",
-                    quantity: 1,
-                    price: 0,
-                    key: randomId(),
-                  })
-                }
-              >
-                Add item
-              </Button>
-            </Group>
+        <Group align="center" mb="xl" grow>
+          <Button
+            onClick={() =>
+              form.insertListItem("items", {
+                description: "",
+                quantity: 1,
+                price: 0,
+                key: randomId(),
+              })
+            }
+          >
+            Add item
+          </Button>
+        </Group>
 
-            <Group align="center" mt="xl" grow>
-              <Button type="submit" disabled={isSaveDisabled}>
-                Save
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      </Accordion.Panel>
-    </Accordion.Item>
+        <Group align="center" mb="xl" grow>
+          <Button type="submit" disabled={isSaveDisabled}>
+            Save
+          </Button>
+        </Group>
+      </Stack>
+    </form>
   );
 }
