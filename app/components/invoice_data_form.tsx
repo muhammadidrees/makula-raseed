@@ -38,9 +38,6 @@ export default function InvoiceDataForm() {
     initialValues: formData,
   });
 
-  const isSaveDisabled =
-    JSON.stringify(form.getValues()) === JSON.stringify(formData);
-
   const fields = form.getValues().items.map((item, index) => (
     <Group key={item.key}>
       <TextInput
@@ -118,9 +115,7 @@ export default function InvoiceDataForm() {
         </Group>
 
         <Group align="center" mb="xl" grow>
-          <Button type="submit" disabled={isSaveDisabled}>
-            Save
-          </Button>
+          <Button type="submit">Save</Button>
         </Group>
       </Stack>
     </form>
