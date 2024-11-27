@@ -37,10 +37,7 @@ const loadInitialState = (): InvoiceData => {
       if (storedData) {
         const parsedData = JSON.parse(storedData);
 
-        // Convert date back into a Date object if it exists
-        if (parsedData.date) {
-          parsedData.date = new Date(parsedData.date);
-        }
+        parsedData.date = new Date();
 
         return parsedData;
       }
@@ -79,13 +76,7 @@ export const InvoiceDataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isBrowser) {
-      const dataToStore = {
-        ...formData,
-        date:
-          formData.date instanceof Date
-            ? formData.date.toISOString()
-            : formData.date,
-      };
+      const dataToStore = { date: null, items: [formData.items[0]] };
       localStorage.setItem("invoiceData", JSON.stringify(dataToStore));
     }
   }, [formData]);
