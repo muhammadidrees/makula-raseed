@@ -109,6 +109,7 @@ export default function InvoiceDataForm() {
                 key: randomId(),
               })
             }
+            variant="light"
           >
             Add item
           </Button>
