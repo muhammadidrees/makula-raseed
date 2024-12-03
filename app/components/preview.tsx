@@ -42,6 +42,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  invoiceNumber: {
+    marginTop: 2,
+    fontSize: 12,
+    fontWeight: "bold",
+  },
   invoiceDetails: {
     textAlign: "right",
   },
@@ -138,6 +143,28 @@ function MyDocument({
   invoiceFromData: InvoiceData;
   bankFormData: BankInfo;
 }) {
+  // Helper function to format dates
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  // Calculate invoice number based on month/year
+  const generateInvoiceNumber = (date: Date) => {
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear()).slice(-2); // Last two digits of the year
+    return `001${month}${year}`;
+  };
+
+  // Generate the invoice period
+  const generateInvoicePeriod = (date: Date) => {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    return `${formatDate(startOfMonth)} - ${formatDate(endOfMonth)}`;
+  };
+
   // Calculate Subtotal and Total
   const subtotal = invoiceFromData.items.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -152,16 +179,21 @@ function MyDocument({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>INVOICE</Text>
+          <View>
+            <Text style={styles.logo}>INVOICE</Text>
+            <Text style={styles.invoiceNumber}>
+              #{generateInvoiceNumber(invoiceFromData.date)}
+            </Text>
+          </View>
           <View style={styles.invoiceDetails}>
-            <Text>Invoice #AB2324-01</Text>
-            <Text>Issued: {invoiceFromData.date.toLocaleDateString()}</Text>
+            <Text>Issued: {formatDate(invoiceFromData.date)}</Text>
             <Text>
               Due:{" "}
-              {new Date(
-                invoiceFromData.date.getTime() + 14 * 86400000
-              ).toLocaleDateString()}
+              {formatDate(
+                new Date(invoiceFromData.date.getTime() + 14 * 86400000)
+              )}
             </Text>
+            <Text>Period: {generateInvoicePeriod(invoiceFromData.date)}</Text>
           </View>
         </View>
 
