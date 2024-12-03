@@ -16,7 +16,6 @@ const PDFViewer = dynamic(
     loading: () => <p>Loading...</p>,
   }
 );
-
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "#ffffff",
@@ -28,6 +27,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 40,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  column: {
+    flex: 1,
+    marginRight: 10, // Add spacing between columns
   },
   logo: {
     fontSize: 20,
@@ -46,6 +54,11 @@ const styles = StyleSheet.create({
   },
   text: {
     marginBottom: 4,
+  },
+  address: {
+    marginBottom: 4,
+    width: "80%", // Set a fixed width
+    wordWrap: "break-word", // Allow text to wrap within the fixed width
   },
   table: {
     width: "100%",
@@ -103,6 +116,7 @@ const styles = StyleSheet.create({
     color: "#666666",
   },
 });
+
 function MyDocument({
   companyFormData,
   personalFormData,
@@ -126,7 +140,7 @@ function MyDocument({
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>Invoice</Text>
+          <Text style={styles.logo}>INVOICE</Text>
           <View style={styles.invoiceDetails}>
             <Text>Invoice #AB2324-01</Text>
             <Text>Issued: {invoiceFromData.date.toLocaleDateString()}</Text>
@@ -139,23 +153,28 @@ function MyDocument({
           </View>
         </View>
 
-        {/* Billed To and From */}
-        <View style={styles.section}>
-          <Text style={styles.title}>Billed To:</Text>
-          <Text style={styles.text}>{companyFormData.name}</Text>
-          <Text style={styles.text}>{companyFormData.address.street}</Text>
-          <Text style={styles.text}>{companyFormData.address.city}</Text>
-          <Text style={styles.text}>{companyFormData.address.zip}</Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.title}>From:</Text>
-          <Text style={styles.text}>{personalFormData.name}</Text>
-          <Text style={styles.text}>{personalFormData.taxID}</Text>
-          <Text style={styles.text}>{personalFormData.email}</Text>
-          <Text style={styles.text}>{personalFormData.address.street}</Text>
-          <Text style={styles.text}>{personalFormData.address.city}</Text>
-          <Text style={styles.text}>{personalFormData.address.zip}</Text>
+        {/* Billed To and From in a Row */}
+        <View style={styles.row}>
+          <View style={styles.column}>
+            <Text style={styles.title}>Billed To:</Text>
+            <Text style={styles.text}>{companyFormData.name}</Text>
+            <Text style={styles.address}>{companyFormData.address.street}</Text>
+            <Text style={styles.text}>
+              {companyFormData.address.city}, {companyFormData.address.zip}
+            </Text>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.title}>From:</Text>
+            <Text style={styles.text}>{personalFormData.name}</Text>
+            <Text style={styles.text}>Tax# {personalFormData.taxID}</Text>
+            <Text style={styles.text}>{personalFormData.email}</Text>
+            <Text style={styles.address}>
+              {personalFormData.address.street}
+            </Text>
+            <Text style={styles.text}>
+              {personalFormData.address.city}, {personalFormData.address.zip}
+            </Text>
+          </View>
         </View>
 
         {/* Table */}
