@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     padding: 40,
     fontFamily: "Helvetica",
-    fontSize: 12,
+    fontSize: 11,
   },
   header: {
     flexDirection: "row",
@@ -49,6 +49,24 @@ const styles = StyleSheet.create({
   },
   invoiceDetails: {
     textAlign: "right",
+    fontSize: 11,
+    width: "38%", // Restrict the width to less than half the page
+    marginLeft: "auto", // Push the section to the right corner
+    marginBottom: 10, // Add some space below
+  },
+  detailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 2, // Minimal vertical spacing
+  },
+  detailLabel: {
+    fontWeight: "bold",
+    flex: 1,
+    textAlign: "left", // Align label to the left within the row
+  },
+  detailValue: {
+    flex: 2,
+    textAlign: "right", // Align value to the right within the row
   },
   section: {
     marginBottom: 20,
@@ -59,10 +77,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   text: {
-    marginBottom: 4,
+    fontSize: 11,
+    marginBottom: 5,
   },
   address: {
     marginBottom: 4,
+    fontSize: 11,
     width: "80%", // Set a fixed width
     wordWrap: "break-word", // Allow text to wrap within the fixed width
   },
@@ -114,18 +134,38 @@ const styles = StyleSheet.create({
   },
   paymentDetails: {
     position: "absolute",
-    bottom: 80, // Adjust this value as needed to position above footer
+    bottom: 60, // Adjust this value as needed to position above footer
     left: 40,
     right: 40,
-    borderBottom: 1,
-    borderColor: "#000",
-    paddingBottom: 10,
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#f9f9f9", // Subtle light background
+  },
+  paymentRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 2, // Reduced vertical spacing between rows
+  },
+  paymentLabel: {
+    fontWeight: "bold",
+    flex: 1, // Label takes 1 unit of space
+    textAlign: "left", // Ensure labels are left-aligned
+  },
+  paymentValue: {
+    flex: 2, // Value takes 2 units of space
+    textAlign: "right", // Ensure values are right-aligned
+  },
+  paymentTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 8, // Reduced margin for a tighter feel
   },
   footer: {
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 40,
+    bottom: 24,
     textAlign: "center",
     fontSize: 10,
     color: "#666666",
@@ -155,7 +195,7 @@ function MyDocument({
   const generateInvoiceNumber = (date: Date) => {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = String(date.getFullYear()).slice(-2); // Last two digits of the year
-    return `001${month}${year}`;
+    return `00${month}${year}`;
   };
 
   // Generate the invoice period
@@ -186,14 +226,30 @@ function MyDocument({
             </Text>
           </View>
           <View style={styles.invoiceDetails}>
-            <Text>Issued: {formatDate(invoiceFromData.date)}</Text>
-            <Text>
-              Due:{" "}
-              {formatDate(
-                new Date(invoiceFromData.date.getTime() + 14 * 86400000)
-              )}
-            </Text>
-            <Text>Period: {generateInvoicePeriod(invoiceFromData.date)}</Text>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Issued Date:</Text>
+              <Text style={styles.detailValue}>
+                {formatDate(invoiceFromData.date)}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Due Date:</Text>
+              <Text style={styles.detailValue}>
+                {formatDate(
+                  new Date(invoiceFromData.date.getTime() + 14 * 86400000)
+                )}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Period:</Text>
+              <Text style={styles.detailValue}>
+                {generateInvoicePeriod(invoiceFromData.date)}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Terms:</Text>
+              <Text style={styles.detailValue}>Fixed</Text>
+            </View>
           </View>
         </View>
 
@@ -270,13 +326,23 @@ function MyDocument({
 
         {/* Payment Details at the Bottom */}
         <View style={styles.paymentDetails}>
-          <Text style={styles.title}>Payment Details:</Text>
-          <Text style={styles.text}>
-            Account Holder: {bankFormData.accountTitle}
-          </Text>
-          <Text style={styles.text}>Bank Name: {bankFormData.name}</Text>
-          <Text style={styles.text}>IBAN: {bankFormData.iban}</Text>
-          <Text style={styles.text}>BIC: {bankFormData.bic}</Text>
+          <Text style={styles.paymentTitle}>Payment Details:</Text>
+          <View style={styles.paymentRow}>
+            <Text style={styles.paymentLabel}>Account Holder:</Text>
+            <Text style={styles.paymentValue}>Meezan Bank</Text>
+          </View>
+          <View style={styles.paymentRow}>
+            <Text style={styles.paymentLabel}>Bank Name:</Text>
+            <Text style={styles.paymentValue}>Muhammad Idrees</Text>
+          </View>
+          <View style={styles.paymentRow}>
+            <Text style={styles.paymentLabel}>IBAN:</Text>
+            <Text style={styles.paymentValue}>PKMEZN83290099883274</Text>
+          </View>
+          <View style={styles.paymentRow}>
+            <Text style={styles.paymentLabel}>BIC:</Text>
+            <Text style={styles.paymentValue}>TWX-34242</Text>
+          </View>
         </View>
 
         {/* Footer */}
