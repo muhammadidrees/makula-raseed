@@ -5,9 +5,10 @@ import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import dynamic from "next/dynamic";
 import { useCompanyFormContext } from "../context/CompanyInfoContext";
 import { usePersonalFormContext } from "../context/PersonalInfoContext";
-import { CompanyInfo, InvoiceData, PersonalInfo } from "../types";
+import { BankInfo, CompanyInfo, InvoiceData, PersonalInfo } from "../types";
 import { useInvoiceDataContext } from "../context/InvoiceDataContext";
 import { useEffect, useState } from "react";
+import { useBankFormContext } from "../context/BankInfoContext";
 
 const PDFViewer = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFViewer),
@@ -106,6 +107,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
+  paymentDetails: {
+    position: "absolute",
+    bottom: 80, // Adjust this value as needed to position above footer
+    left: 40,
+    right: 40,
+    borderBottom: 1,
+    borderColor: "#000",
+    paddingBottom: 10,
+  },
   footer: {
     position: "absolute",
     left: 0,
@@ -121,10 +131,12 @@ function MyDocument({
   companyFormData,
   personalFormData,
   invoiceFromData,
+  bankFormData,
 }: {
   companyFormData: CompanyInfo;
   personalFormData: PersonalInfo;
   invoiceFromData: InvoiceData;
+  bankFormData: BankInfo;
 }) {
   // Calculate Subtotal and Total
   const subtotal = invoiceFromData.items.reduce(
@@ -160,7 +172,7 @@ function MyDocument({
             <Text style={styles.text}>{companyFormData.name}</Text>
             <Text style={styles.address}>{companyFormData.address.street}</Text>
             <Text style={styles.text}>
-              {companyFormData.address.city}, {companyFormData.address.zip}
+              {companyFormData.address.city}. {companyFormData.address.zip}
             </Text>
           </View>
           <View style={styles.column}>
@@ -224,6 +236,17 @@ function MyDocument({
           </View>
         </View>
 
+        {/* Payment Details at the Bottom */}
+        <View style={styles.paymentDetails}>
+          <Text style={styles.title}>Payment Details:</Text>
+          <Text style={styles.text}>
+            Account Holder: {bankFormData.accountTitle}
+          </Text>
+          <Text style={styles.text}>Bank Name: {bankFormData.name}</Text>
+          <Text style={styles.text}>IBAN: {bankFormData.iban}</Text>
+          <Text style={styles.text}>BIC: {bankFormData.bic}</Text>
+        </View>
+
         {/* Footer */}
         <Text style={styles.footer}>
           Amount due: {total.toFixed(2)} €{"\n"}
@@ -239,6 +262,7 @@ export function PdfView() {
   const { companyFormData } = useCompanyFormContext();
   const { personalFormData } = usePersonalFormContext();
   const { invoiceFromData } = useInvoiceDataContext();
+  const { bankFromData } = useBankFormContext();
 
   const [isReady, setIsReady] = useState(false);
 
@@ -257,6 +281,7 @@ export function PdfView() {
           personalFormData={personalFormData}
           companyFormData={companyFormData}
           invoiceFromData={invoiceFromData}
+          bankFormData={bankFromData}
         />
       </PDFViewer>
     </div>
