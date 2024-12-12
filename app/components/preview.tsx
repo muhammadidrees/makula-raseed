@@ -235,9 +235,7 @@ function MyDocument({
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Due Date:</Text>
               <Text style={styles.detailValue}>
-                {formatDate(
-                  new Date(invoiceFromData.date.getTime() + 14 * 86400000)
-                )}
+                {formatDate(new Date(invoiceFromData.date))}
               </Text>
             </View>
             <View style={styles.detailRow}>
@@ -260,7 +258,7 @@ function MyDocument({
             <Text style={styles.text}>{companyFormData.name}</Text>
             <Text style={styles.address}>{companyFormData.address.street}</Text>
             <Text style={styles.text}>
-              {companyFormData.address.city}. {companyFormData.address.zip}
+              {companyFormData.address.zip}, {companyFormData.address.city}
             </Text>
           </View>
           <View style={styles.column}>
