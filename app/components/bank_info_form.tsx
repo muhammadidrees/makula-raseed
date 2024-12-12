@@ -21,15 +21,15 @@ function onFromSubmit(
 }
 
 export default function BankInfoAccordion() {
-  const { formData, setFormData } = useBankFormContext();
+  const { bankFromData: formData, setFormData } = useBankFormContext();
 
   const form = useForm<BankInfo>({
     initialValues: formData,
     validate: {
-      name: (value) => (value ? null : "Bank Name is required"),
-      accountTitle: (value) => (value ? null : "Account Title is required"),
-      iban: (value) => (value ? null : "IBAN is required"),
-      bic: (value) => (value ? null : "BIC is required"),
+      name: isNotEmpty("Bank Name is required"),
+      accountTitle: isNotEmpty("Account Title is required"),
+      iban: isNotEmpty("IBAN is required"),
+      bic: isNotEmpty("BIC is required"),
     },
   });
 
