@@ -326,20 +326,20 @@ function MyDocument({
         <View style={styles.paymentDetails}>
           <Text style={styles.paymentTitle}>Payment Details:</Text>
           <View style={styles.paymentRow}>
-            <Text style={styles.paymentLabel}>Account Holder:</Text>
-            <Text style={styles.paymentValue}>Meezan Bank</Text>
+            <Text style={styles.paymentLabel}>Bank Name:</Text>
+            <Text style={styles.paymentValue}>{bankFormData.name}</Text>
           </View>
           <View style={styles.paymentRow}>
-            <Text style={styles.paymentLabel}>Bank Name:</Text>
-            <Text style={styles.paymentValue}>Muhammad Idrees</Text>
+            <Text style={styles.paymentLabel}>Account Title:</Text>
+            <Text style={styles.paymentValue}>{bankFormData.accountTitle}</Text>
           </View>
           <View style={styles.paymentRow}>
             <Text style={styles.paymentLabel}>IBAN:</Text>
-            <Text style={styles.paymentValue}>PKMEZN83290099883274</Text>
+            <Text style={styles.paymentValue}>{bankFormData.iban}</Text>
           </View>
           <View style={styles.paymentRow}>
             <Text style={styles.paymentLabel}>BIC:</Text>
-            <Text style={styles.paymentValue}>TWX-34242</Text>
+            <Text style={styles.paymentValue}>{bankFormData.bic}</Text>
           </View>
         </View>
 
