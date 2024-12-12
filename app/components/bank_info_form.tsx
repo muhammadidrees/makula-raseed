@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, UseFormReturnType } from "@mantine/form";
+import { isNotEmpty, useForm, UseFormReturnType } from "@mantine/form";
 import { TextInput, Button, Group, Stack, Accordion } from "@mantine/core";
 import { BankInfo } from "../types";
 import { useBankFormContext } from "../context/BankInfoContext";
@@ -25,12 +25,12 @@ export default function BankInfoAccordion() {
 
   const form = useForm<BankInfo>({
     initialValues: formData,
-    // validate: {
-    //   name: isNotEmpty("Bank Name is required"),
-    //   accountTitle: isNotEmpty("Account Title is required"),
-    //   iban: isNotEmpty("IBAN is required"),
-    //   bic: isNotEmpty("BIC is required"),
-    // },
+    validate: {
+      name: isNotEmpty("Bank Name is required"),
+      accountTitle: isNotEmpty("Account Title is required"),
+      iban: isNotEmpty("IBAN is required"),
+      bic: isNotEmpty("BIC is required"),
+    },
   });
 
   const isSaveDisabled =
