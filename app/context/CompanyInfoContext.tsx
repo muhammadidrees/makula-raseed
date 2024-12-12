@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   createContext,
   useContext,
@@ -5,6 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { useSearchParams } from "next/navigation";
 import { CompanyInfo } from "../types";
 
 interface CompanyInfoFormContextType {
@@ -50,9 +53,27 @@ const loadInitialState = (): CompanyInfo => {
 };
 
 export const CompanyFormProvider = ({ children }: { children: ReactNode }) => {
-  // Load initial state from localStorage
+  const params = useSearchParams();
 
-  const [formData, setFormData] = useState<CompanyInfo>(loadInitialState);
+  const company = params.get("company");
+
+  let companyData = null;
+
+  if (company?.toLowerCase() === "makula") {
+    companyData = {
+      name: "Makula Technology GmbH",
+      address: {
+        street: "c/o Mindspace Münzstr. 12",
+        city: "Germany",
+        zip: "10178 Berlin",
+      },
+    };
+  }
+
+  // Load initial state from localStorage or use companyData if available
+  const [formData, setFormData] = useState<CompanyInfo>(
+    companyData || loadInitialState()
+  );
 
   // Save formData to localStorage whenever it changes
   useEffect(() => {
